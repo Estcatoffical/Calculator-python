@@ -1,0 +1,56 @@
+import tkinter as tk
+import sys
+
+# Function to update the expression in the text entry box
+def press(key):
+    if key == "=":
+        try:
+            # Evaluate the expression and update the entry text
+            result = eval(entry_text.get())
+            entry_text.set(result)
+        except ZeroDivisionError:
+            # Log the error message and exit the program immediately
+            with open("error.log", "w") as f:
+                f.write("dude what the fuck? You created a literal black hole.")
+            sys.exit("dude what the fuck? You created a literal black hole.")
+        except Exception as e:
+            # Handle other possible exceptions
+            entry_text.set("Error")
+    elif key == "C":
+        # Clear the entry text
+        entry_text.set("")
+    else:
+        # Update the entry text with the pressed key
+        entry_text.set(entry_text.get() + str(key))
+
+# Create the main window
+root = tk.Tk()
+root.title("Phone Calculator")
+root.geometry("400x600")
+
+# Entry widget for the expression
+entry_text = tk.StringVar()
+entry = tk.Entry(root, textvariable=entry_text, font=('Arial', 20), bd=10, insertwidth=4, width=14, borderwidth=4)
+entry.grid(row=0, column=0, columnspan=4)
+
+# Button layout
+buttons = [
+    '7', '8', '9', '/',
+    '4', '5', '6', '*',
+    '1', '2', '3', '-',
+    'C', '0', '=', '+'
+]
+
+# Create buttons and place them in the grid
+row_val = 1
+col_val = 0
+for button in buttons:
+    action = lambda x=button: press(x)
+    tk.Button(root, text=button, padx=20, pady=20, font=('Arial', 18), command=action).grid(row=row_val, column=col_val)
+    col_val += 1
+    if col_val > 3:
+        col_val = 0
+        row_val += 1
+
+# Run the main event loop
+root.mainloop()
